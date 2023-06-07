@@ -6,7 +6,7 @@
 ********************************************************************************/
 #include <bits/stdc++.h>
 using namespace std;
-
+//a
 typedef struct Node
 {
     int coe; //系数
