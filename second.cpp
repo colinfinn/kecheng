@@ -14,31 +14,35 @@ bool isLeapYear(int year)
 {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
-#if 0
-bool judge(int year, int month, int day)
-{
-    static int yd = 0;
+#if 1
 
-    if(year == 2001 && month == 11 && day == 4 && yd % 2 == 0) //符合条件
-        return true;
-    else
-        return false;
-    if(year > 2001&& yd % 2 == 0) //不符合条件
-        return false;
-    else if(year == 2001&& yd % 2 == 0)
+int a = 0;
+//无论如何，每次判断都只有有两条递归路线,high用来判断轮到哪一个玩家
+void judge(int year, int month, int day, int high)
+{
+    if(year == 2001 && month == 11 && day == 4) //符合条件
     {
-        if(month > 11&& yd % 2 == 0)
-            return false;
-        else if(month == 11&& yd % 2 == 0)
+        if(high % 2 == 0)//当某个玩家胜利，判断是否为亚当，且胜利路线条数大于1时，亚当可胜利
         {
-            if(day > 4&& yd % 2 == 0)
-                return false;
+            a++;
+        }
+        return;
+    }    
+    if(year > 2001) //不符合条件
+    {    
+        
+        return;
+    }
+    else if(year == 2001)
+    {
+        if(month > 11)
+            return;
+        else if(month == 11)
+        {
+            if(day > 4)
+                return;
         }
     }
-    else
-        
-    
-    //未到末尾，继续递归
 
     //----------------------先变成下一个月的同一天
     int newMonth = month + 1; //更新月份，判断下一个月的当前天是否有效
@@ -47,83 +51,67 @@ bool judge(int year, int month, int day)
         newMonth = 1;
         year++;
     }
-    if(isLeapYear(year))    //判断下一个月的同一天是否有效 ,如果是闰年
+    if(isLeapYear(year))    //判断下一个月的同一天是否有效 ,有效入递归
     {
-        if(day > leap[newMonth])    //无效，只能选择变为第二天
+        if(day < leap[newMonth])    
         {
-            day++;
-            if(day > leap[month])
-            {
-                day = 1;
-                month++;
-                if(month > 12)  //如果月份> 12
-                {
-                    year++;
-                    month = 1;
-                    yd++;
-                    judge(year, month, day); 
-                }
-                yd++;
-                judge(year, month, day);
-            }
-            else
-            {
-                yd++;
-                judge(year, month, day);
-            }
-        }
-        else    //有效，变为下一个月同一天
-        {
-            yd++;
-            judge(year, newMonth, day);
+            judge(year, newMonth, day, high + 1);
         }
     }
     else//判断下一个月的同一天是否有效 ,如果是平年
     {
-        if(day > nonleap[newMonth])    //无效，只能选择变为第二天
+        if(day < nonleap[newMonth])    //判断下一个月的同一天是否有效 ,有效入递归
         {
-            day++;
-            if(day > nonleap[month])
-            {
-                day = 1;
-                month++;
-                if(month > 12)
-                {
-                    year++;
-                    month = 1;
-                    yd++;
-                    judge(year, month, day);
-                }
-                yd++;
-                judge(year, month, day);
-            }
-            else
-            {
-                yd++;
-                judge(year, month, day);
-            }
-
-        }
-        else    //有效，变为下一个月同一天
-        {
-            yd++;
-            judge(year, newMonth, day);
+            judge(year, newMonth, day, high + 1);
         }
     }
 
-    
-}
-#endif
 
-int main()
-{
-    if(judge(2001, 11, 3))
+    //------------变第二天-------------------------
+    int newDay = day + 1;
+    if(isLeapYear(year))    //如果是闰年
     {
-        cout << "Yes";
+        if(newDay > leap[month])
+        {
+            newDay = 1;
+            month++;
+        }
+        if(month > 12)
+        {
+            //开始递归
+            judge(year + 1, 1, newDay, high + 1);
+        }
+        judge(year, month, newDay, high + 1);
     }
     else
     {
-        cout << "No";
+        if(newDay > nonleap[month])
+        {
+            newDay = 1;
+            month++;
+        }
+        if(month > 12)
+        {
+            judge(year + 1, 1, newDay, high + 1);
+        }
+        judge(year, month, newDay, high + 1);
+    }
+}
+#endif
+
+
+
+int main()
+{
+
+    judge(2001, 11, 3, -1);
+    if(a > 0)
+    {
+        cout << "YES" << endl;
+    }
+    else
+    {
+        cout << "NO" << endl;
     }
     system("pause");
     return 0;
