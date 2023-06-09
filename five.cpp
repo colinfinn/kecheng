@@ -26,12 +26,20 @@ bool judge(char a, char b)
         return false;
 }
 
-//将中缀表达式转换为逆波兰式
-void transform(string a)
+int getResult(int a, int b, char c)
 {
-    stack<char> temp;
-    stack<int> tempNum;
+    switch (c)
+        {
+            case '+': return a + b; break;
+            case '-': return a - b; break;
+            case '*': return a * b; break;
+            case '/': return a / b; break;
+        }
+}
 
+//将中缀表达式转换为逆波兰式
+int transform(string a)
+{
     for (int i = 0; i < a.length(); i++)
     {
         if(a[i] >= '0' && a[i] <= '9')
@@ -44,7 +52,7 @@ void transform(string a)
                 t += a[j] - '0';
                 j++;
             }
-            tempNum.push(t);
+            num.push(t);    //将操作数入栈
             i = j - 1;
         }
         else if(a[i] == '(') //直接入栈
@@ -55,12 +63,18 @@ void transform(string a)
         {
             while(op.top() != '(')
             {
-                temp.push(op.top());
+                int a = num.top();
+                num.pop();
+                int b = num.top();
+                num.pop();
+                num.push(getResult(a, b, op.top()));
                 op.pop();
             }
             op.pop();   //将'('弹出
         }
-        else    //如果是运算符
+        else if(a[i] != '+' && a[i] != '-' && a[i] != '*' && a[i] != '/')    //如果是运算符
+            continue;
+        else
         {
             if(!op.empty() && op.top() == '(')
             {
@@ -69,9 +83,14 @@ void transform(string a)
             else
             {
                 //当运算符低于栈顶时，需要将op弹出再入栈
-                while(!op.empty() && judge(a[i], op.top()))
+                while(!op.empty() && judge(op.top(), a[i]))
                 {
-                    temp.push(op.top());
+
+                    int a = num.top();
+                    num.pop();
+                    int b = num.top();
+                    num.pop();
+                    num.push(getResult(a, b, op.top()));
                     op.pop();
                 }
                 //正常优先级
@@ -82,53 +101,21 @@ void transform(string a)
 
     while(!op.empty())
     {
-        temp.push(op.top());
-        op.pop();
-    }
-    while(!temp.empty())
-    {
-        op.push(temp.top());
-        temp.pop();
-    }
-
-    while (!tempNum.empty())
-    {
-        num.push(tempNum.top());
-        tempNum.pop();
-    }
-}
-
-
-//通过逆波兰式计算运算结果
-int calculate()
-{
-    while(!op.empty())
-    {
         int a = num.top();
         num.pop();
         int b = num.top();
         num.pop();
-        switch (op.top())
-        {
-            case '+': num.push(a + b); break;
-            case '-': num.push(a - b); break;
-            case '*': num.push(a * b); break;
-            case '/': num.push(a / b); break;
-        }
+        num.push(getResult(a, b, op.top()));
         op.pop();
     }
     return num.top();
 }
 
 
-
-
 int main()
 {
     
-    transform("3+2*4");
-    cout << calculate();
-    
+    cout << transform("(3+2) * (4+5)");
 
     system("pause");
     return 0;
