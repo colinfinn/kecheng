@@ -74,12 +74,10 @@ void polynomial::add(Node *a) //将多项式节点插入到多项式中
     t->next = a;
 }
 
-
-polynomial polynomial::operator+(polynomial A)
+polynomial addAndSub(Node *first, Node *second, char c)
 {
-    Node *first = A.head->next;
-    Node *second = this->head->next;
     polynomial result;
+
     while(first && second)
     {
         if(first->exp > second->exp)
@@ -99,10 +97,14 @@ polynomial polynomial::operator+(polynomial A)
             if(first->coe + second->coe != 0)
             {
                 Node *t = new Node;
-                t->coe = first->coe + second->coe;
+                if(c == '+')
+                    t->coe = first->coe + second->coe;
+                else
+                    t->coe = first->coe - second->coe;
                 t->exp = first->exp;
                 t->next = nullptr;
-                result.add(t);
+                if(t->coe != 0)
+                    result.add(t);
             }
             first = first->next;
             second = second->next;
@@ -126,54 +128,19 @@ polynomial polynomial::operator+(polynomial A)
 }
 
 
+polynomial polynomial::operator+(polynomial A)
+{
+    Node *first = A.head->next;
+    Node *second = this->head->next;
+    return addAndSub(first, second, '+');
+}
+
+
 polynomial polynomial::operator-(polynomial A)
 {
     Node *first = A.head->next;
     Node *second = this->head->next;
-    polynomial result;
-    while(first && second)
-    {
-        if(first->exp > second->exp)
-        {
-            Node *t = new Node{first->coe, first->exp, nullptr};
-            result.add(t);
-            first = first->next;
-        }
-        if(first->exp < second->exp)
-        {
-            Node *t = new Node{second->coe, second->exp, nullptr};
-            result.add(t);
-            second = second->next;
-        }
-        if(first->exp == second->exp)
-        {
-            if(first->coe - second->coe != 0)
-            {
-                Node *t = new Node;
-                t->coe = first->coe - second->coe;
-                t->exp = first->exp;
-                t->next = nullptr;
-                result.add(t);
-            }
-            first = first->next;
-            second = second->next;
-        }
-    }
-
-    while(first != nullptr)
-    {
-        Node *t = new Node{first->coe, first->exp, nullptr};
-        result.add(t);
-        first = first->next;
-    }    
-
-    while(second != nullptr)
-    {
-        Node *t = new Node{second->coe, second->exp, nullptr};
-        result.add(t);
-        second = second->next;
-    }  
-    return result;
+    return addAndSub(first, second, '-');  
 }
 
 int polynomial::calculate(int x)
@@ -208,9 +175,6 @@ int main()
     f.add(&r);
     i = a - f;
     i.printList();
-
-
-
     
     system("pause");
     return 0;

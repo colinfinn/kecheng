@@ -31,9 +31,9 @@ int getResult(int a, int b, char c)
     switch (c)
         {
             case '+': return a + b; break;
-            case '-': return a - b; break;
+            case '-': return b - a; break;
             case '*': return a * b; break;
-            case '/': return a / b; break;
+            case '/': return b / a; break;
         }
 }
 
@@ -115,7 +115,7 @@ int transform(string a)
 int main()
 {
     
-    cout << transform("(3+2) * (4+5)");
+    cout << transform("(3/2) *(5 + 5)");
 
     system("pause");
     return 0;

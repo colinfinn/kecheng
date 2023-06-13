@@ -7,7 +7,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 int leap[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-int nonleap[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+int nonleap[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 //判断是否为闰年
 bool isLeapYear(int year)
