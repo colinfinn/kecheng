@@ -156,6 +156,14 @@ int polynomial::calculate(int x)
 
 int main()
 {
+    stringstream s1("3x^2-5x^2");
+    
+    int  s2, s3, s4;
+    s1 >> s2;
+    s1 >> s3;
+    // s1 >> s2;
+    cout << s3;
+
     polynomial a, f,i;
     Node b = {5,3,nullptr};
     Node c = {5,8,nullptr};
@@ -169,10 +177,14 @@ int main()
     a.add(&c);
     a.add(&d);
     a.add(&e);
+
+
     f.add(&q);
     f.add(&w);
     f.add(&o);
     f.add(&r);
+
+
     i = a - f;
     i.printList();
     

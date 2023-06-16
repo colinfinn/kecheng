@@ -20,6 +20,7 @@ int a = 0;
 //无论如何，每次判断都只有有两条递归路线,high用来判断轮到哪一个玩家
 void judge(int year, int month, int day, int high)
 {
+    
     if(year == 2001 && month == 11 && day == 4) //符合条件
     {
         if(high % 2 == 0)//当某个玩家胜利，判断是否为亚当，且胜利路线条数大于1时，亚当可胜利
@@ -104,7 +105,7 @@ void judge(int year, int month, int day, int high)
 int main()
 {
 
-    judge(2001, 11, 3, -1);
+    judge(1998, 11, 3, -1);
     if(a > 0)
     {
         cout << "YES" << endl;

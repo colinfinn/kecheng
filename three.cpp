@@ -6,12 +6,15 @@
 ********************************************************************************/
 #include <bits/stdc++.h>
 using namespace std;
-
+#define LEN 5000
 typedef struct 
 {
     int length;
     int weight;
 }wood;
+
+
+
 
 
 //比较函数，确定快速排序的排序规则
@@ -54,46 +57,98 @@ void quickSort(wood *num, int begin, int end)
     quickSort(num, i + 1, end);
 }
 
-//最长递增子序列
-int LIS(wood *w, int len)
+//生成测试测试数据
+void createFile(int num)
 {
-    int *dp = new int[len];
+    srand(time(NULL));
+    ofstream ofs;
+    char fileName[20];
+    sprintf(fileName, "test%d.txt", num);
+    ofs.open(fileName, ios::out);
+    for (int i = 0; i < num; i++)
+    {
+        ofs << (rand() % LEN) << " "<<  (rand() % LEN) << endl;
+    }
+    ofs.close();
+}
+
+wood * loadFile(char fileName[], int len)
+{
+    wood * res = new wood[len];
+    ifstream ifs;
+    ifs.open(fileName, ios::in);
     for (int i = 0; i < len; i++)
     {
-        dp[i] = 1;
+        ifs >> res[i].length;
+        ifs >> res[i].weight;
     }
-    int result = 1;
-    for (int i = 0; i < len; i++)   //计算dp[i]
-    {
-        for (int j = 0; j < i; j++)
-        {
-
-            if(w[j].weight > w[i].weight)
-                dp[i] = max(dp[j] + 1, dp[i]);
-        }
-        result = max(dp[i], result);
-    }
-    return result;
+    ifs.close();
+    return res;
+    
 }
+
+
 
 
 int main()
 {
-    wood *a = new wood[6]{
-        {4, 9},
-        {5, 2},
-        {2, 1},
-        {2,3},
-        {3, 5},
-        {1, 4}
-    };
-    quickSort(a, 0, 5);
-    for (int i = 0; i < 6; i++)
+    createFile(LEN);
+    char fileName[20];
+    sprintf(fileName, "test%d.txt", LEN);
+    wood * a = loadFile(fileName, LEN);
+    quickSort(a, 0, LEN - 1);
+    int *minTime = new int[LEN];
+    int *order = new int[LEN];
+    for (int i = 0; i < LEN; i++)
     {
-        printf("wood: len= %d, weight=%d.\n", a[i].length, a[i].weight);
+        minTime[i] = 1;
+    }
+    
+    for (int i = 0; i < LEN; i++)
+    {
+        int curTime = 1;
+        for (int j = 0; j < i; j++)
+        {
+            //如果前一个木棒比后一个木棒要重，准备时间+1，
+            if(a[j].weight > a[i].weight)
+                curTime = max(curTime, minTime[j] + 1);
+        }
+        minTime[i] = curTime;
+    }
+    int minReadyTime = 0;
+    for (int i = 0; i < LEN; i++)
+    {
+        if(minTime[i] > minReadyTime)
+            minReadyTime = minTime[i];
     }
 
-    //cout << LIS(a, 5);
+    cout << "最小准备时间" << minReadyTime << endl;
+    
+    //求加工顺序
+    for (int i = 1; i <= minReadyTime; i++)
+    {
+        for (int j = 0; j < LEN; j++)
+        {
+            if(minTime[j] == i)
+                printf("(%d, %d)->", a[j].length, a[j].weight);
+        }
+        
+    }
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
     system("pause");
     return 0;

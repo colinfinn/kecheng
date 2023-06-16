@@ -7,7 +7,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 //3 + 2 - 5 * 8
-stack<char> num; //存放操作数
+stack<int> num; //存放操作数
 stack<char> op;//存放运算符
 
 //判断优先级,a优先级高于b则返回true
@@ -115,7 +115,7 @@ int transform(string a)
 int main()
 {
     
-    cout << transform("(3/2) *(5 + 5)");
+    cout << transform("(300+2)*5");
 
     system("pause");
     return 0;
